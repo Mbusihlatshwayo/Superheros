@@ -94,7 +94,6 @@ class CharactersListViewController: UIViewController
     {
         showLoadingView()
         NetworkManager.shared.getHeroes(offset: page, publicKey: NetworkManager.MarvelPublicApiKey) { [weak self] characters, errorString in
-            self?.dismissLoadingView()
             if errorString == nil
             {
                 guard let retreivedCharacters = characters else {
@@ -111,6 +110,7 @@ class CharactersListViewController: UIViewController
                     self?.shouldGoToNextCharacterPage = false
                 }
                 self?.characters.append(contentsOf: characters ?? [Character]())
+                self?.dismissLoadingView()
                 self?.updateData(with: self?.characters ?? [Character]())
             }
             else
@@ -120,6 +120,7 @@ class CharactersListViewController: UIViewController
                     switch result {
                     case .success(let characters):
                         DispatchQueue.main.async {
+                            self?.dismissLoadingView()
                             self?.updateData(with: characters)
                         }
                     case .failure(_):
@@ -135,7 +136,6 @@ class CharactersListViewController: UIViewController
         guard name.isEmpty == false else { return }
         showLoadingView()
         NetworkManager.shared.getHeroesWithName(offset: specificCharactersOffset, nameStartingWith: name) { [weak self] characters, errorString in
-            self?.dismissLoadingView()
             if errorString == nil
             {
                 if characters?.count ?? 0 < 100
@@ -143,6 +143,7 @@ class CharactersListViewController: UIViewController
                     self?.shouldGoToNextNamedCharacterPage = false
                 }
                 self?.specificCharacters.append(contentsOf: characters ?? [Character]())
+                self?.dismissLoadingView()
                 self?.updateData(with: self?.specificCharacters ?? [Character]())
             }
         }
